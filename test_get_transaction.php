@@ -1,9 +1,21 @@
 <?php
 require_once __DIR__ . '/w3p_client.php';
 
-$w3p = new W3PSoapClient(getenv('W3P_ID'), getenv('W3P_KEY'));
+$w3p = new W3PSoapClient();
+$id = $w3p->getW3pId();
+$key = $w3p->getW3pKey();
 
-$xml = $w3p->buildFilterParams('GET_TRANSACTION', ['fkeyword' => '']);
+$xml = "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <filter>
+      <fkeyword></fkeyword>
+    </filter>
+  </data>
+</root>";
 
 $result = $w3p->runTest('GET_TRANSACTION', $xml);
 

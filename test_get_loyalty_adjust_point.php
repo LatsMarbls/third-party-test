@@ -1,17 +1,26 @@
 <?php
 require_once __DIR__ . '/w3p_client.php';
 
-$testMemberId = getenv('W3P_TEST_MEMBER_ID') ?: 'PLACEHOLDER_MEMBER_ID';
-$w3p = new W3PSoapClient(getenv('W3P_ID'), getenv('W3P_KEY'));
+$w3p = new W3PSoapClient();
+$id = $w3p->getW3pId();
+$key = $w3p->getW3pKey();
 
-$xml = $w3p->buildFilterParams('GET_LOYALTY_ADJUST_POINT', [
-    'ffspmembid' => $testMemberId,
-    'fstatus_flag' => '6',
-    'fftrxdate' => '',
-    'fttrxdate' => '',
-    'freference_code' => '',
-    'fdocument_no' => '',
-]);
+$xml = "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <filter>
+      <ffspmembid>6704-3865</ffspmembid>
+      <fstatus_flag>6</fstatus_flag>
+      <fftrxdate></fftrxdate>
+      <fttrxdate></fttrxdate>
+      <freference_code></freference_code>
+      <fdocument_no></fdocument_no>
+    </filter>
+  </data>
+</root>";
 
 $result = $w3p->runTest('GET_LOYALTY_ADJUST_POINT', $xml);
 

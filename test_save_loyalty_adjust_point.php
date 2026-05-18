@@ -1,17 +1,26 @@
 <?php
 require_once __DIR__ . '/w3p_client.php';
 
-$testMemberId = getenv('W3P_TEST_MEMBER_ID') ?: 'PLACEHOLDER_MEMBER_ID';
-$w3p = new W3PSoapClient(getenv('W3P_ID'), getenv('W3P_KEY'));
+$w3p = new W3PSoapClient();
+$id = $w3p->getW3pId();
+$key = $w3p->getW3pKey();
 
-$xml = $w3p->buildRecordParams('SAVE_LOYALTY_ADJUST_POINT', [
-    'ftrxdate' => '20231201',
-    'freference_code' => '1',
-    'ffspmembid' => $testMemberId,
-    'fofficeid' => 'TEST',
-    'fpoint' => '1',
-    'fmemo' => 'Point adjustment from Doxo',
-]);
+$xml = "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <record>
+      <ftrxdate>20231201</ftrxdate>
+      <freference_code>1</freference_code>
+      <ffspmembid>6704-3865</ffspmembid>
+      <fofficeid>TEST</fofficeid>
+      <fpoint>1</fpoint>
+      <fmemo>Point adjustment from Doxo</fmemo>
+    </record>
+  </data>
+</root>";
 
 $result = $w3p->runTest('SAVE_LOYALTY_ADJUST_POINT', $xml);
 

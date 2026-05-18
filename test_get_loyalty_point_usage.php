@@ -1,22 +1,31 @@
 <?php
 require_once __DIR__ . '/w3p_client.php';
 
-$testMemberId = getenv('W3P_TEST_MEMBER_ID') ?: 'PLACEHOLDER_MEMBER_ID';
-$w3p = new W3PSoapClient(getenv('W3P_ID'), getenv('W3P_KEY'));
+$w3p = new W3PSoapClient();
+$id = $w3p->getW3pId();
+$key = $w3p->getW3pKey();
 
-$xml = $w3p->buildRecordParams('GET_LOYALTY_POINT_USAGE', [
-    'fftrxdate' => '',
-    'fttrxdate' => '',
-    'fdoctype' => '',
-    'freference_code' => '',
-    'fofficeid' => 'TEST',
-    'ffspmembid' => $testMemberId,
-    'fkeyword' => '',
-]);
+$xml = "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <record>
+      <fftrxdate></fftrxdate>
+      <fttrxdate></fttrxdate>
+      <fdoctype></fdoctype>
+      <freference_code></freference_code>
+      <fofficeid>TEST</fofficeid>
+      <ffspmembid>6704-3865</ffspmembid>
+      <fkeyword></fkeyword>
+    </record>
+  </data>
+</root>";
 
 $result = $w3p->runTest('GET_LOYALTY_POINT_USAGE', $xml);
 
-echo "=== GET_LOYALTY_POINT_USAGE ({$testMemberId}) ===\n";
+echo "=== GET_LOYALTY_POINT_USAGE (6704-3865) ===\n";
 echo "Time: {$result['time_ms']}ms\n";
 echo "Status: " . ($result['success'] ? 'OK' : 'FAIL') . "\n";
 if ($result['error']) {

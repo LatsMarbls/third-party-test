@@ -1,90 +1,175 @@
 <?php
 require_once __DIR__ . '/w3p_client.php';
 
-$w3p_id = getenv('W3P_ID');
-$w3p_key = getenv('W3P_KEY');
-$testMemberId = getenv('W3P_TEST_MEMBER_ID') ?: 'PLACEHOLDER_MEMBER_ID';
+$w3p = new W3PSoapClient();
+$id = $w3p->getW3pId();
+$key = $w3p->getW3pKey();
 
 echo "============================================\n";
 echo "  W3P - Alliance WebPOS SOAP Test Suite\n";
+echo "  Server: statara2.alliancewebpos.net\n";
 echo "============================================\n\n";
-
-$w3p = new W3PSoapClient($w3p_id, $w3p_key);
 
 $tests = [];
 
-$tests[] = ['GET_ACCOUNT', $w3p->buildFilterParams('GET_ACCOUNT', ['fkeyword' => ''])];
+$tests[] = ['GET_ACCOUNT', "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <filter>
+      <fkeyword></fkeyword>
+    </filter>
+  </data>
+</root>"];
 
-$tests[] = ['GET_PRODUCT', $w3p->buildFilterParams('GET_PRODUCT', ['fkeyword' => ''])];
+$tests[] = ['GET_PRODUCT', "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <filter>
+      <fkeyword></fkeyword>
+    </filter>
+  </data>
+</root>"];
 
-$tests[] = ['GET_TRANSACTION', $w3p->buildFilterParams('GET_TRANSACTION', ['fkeyword' => ''])];
+$tests[] = ['GET_TRANSACTION', "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <filter>
+      <fkeyword></fkeyword>
+    </filter>
+  </data>
+</root>"];
 
-$tests[] = ['GET_LOYALTY_MEMBER', $w3p->buildFilterParams('GET_LOYALTY_MEMBER', [
-    'ffspmembid' => $testMemberId,
-    'faccountid' => '',
-    'ffmember_date' => '',
-    'ftmember_date' => '',
-    'ffcreated_date' => '',
-    'ftcreated_date' => '',
-    'fffsp_expiry' => '',
-    'fftsp_expiry' => '',
-    'ffsp_status_flag' => '1',
-    'fofficeid' => 'TEST',
-    'fnew_batchid' => '',
-    'flast_batchid' => '',
-    'flast_key' => '',
-])];
+$tests[] = ['GET_LOYALTY_MEMBER', "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <filter>
+      <ffspmembid>6704-3865</ffspmembid>
+      <faccountid></faccountid>
+      <ffmember_date></ffmember_date>
+      <ftmember_date></ftmember_date>
+      <ffcreated_date></ffcreated_date>
+      <ftcreated_date></ftcreated_date>
+      <fffsp_expiry></fffsp_expiry>
+      <fftsp_expiry></fftsp_expiry>
+      <ffsp_status_flag>1</ffsp_status_flag>
+      <fofficeid>TEST</fofficeid>
+      <fnew_batchid></fnew_batchid>
+      <flast_batchid></flast_batchid>
+      <flast_key></flast_key>
+    </filter>
+  </data>
+</root>"];
 
-$tests[] = ['GET_LOYALTY_POINT_BALANCE', $w3p->buildRecordParams('GET_LOYALTY_POINT_BALANCE', [
-    'fofficeid' => 'TEST',
-    'ffspmembid' => $testMemberId,
-    'ffsp_status_flag' => '',
-    'fkeyword' => '',
-])];
+$tests[] = ['GET_LOYALTY_POINT_BALANCE', "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <record>
+      <fofficeid>TEST</fofficeid>
+      <ffspmembid>6704-3865</ffspmembid>
+      <ffsp_status_flag></ffsp_status_flag>
+      <fkeyword></fkeyword>
+    </record>
+  </data>
+</root>"];
 
-$tests[] = ['GET_LOYALTY_POINT_USAGE', $w3p->buildRecordParams('GET_LOYALTY_POINT_USAGE', [
-    'fftrxdate' => '',
-    'fttrxdate' => '',
-    'fdoctype' => '',
-    'freference_code' => '',
-    'fofficeid' => 'TEST',
-    'ffspmembid' => $testMemberId,
-    'fkeyword' => '',
-])];
+$tests[] = ['GET_LOYALTY_POINT_USAGE', "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <record>
+      <fftrxdate></fftrxdate>
+      <fttrxdate></fttrxdate>
+      <fdoctype></fdoctype>
+      <freference_code></freference_code>
+      <fofficeid>TEST</fofficeid>
+      <ffspmembid>6704-3865</ffspmembid>
+      <fkeyword></fkeyword>
+    </record>
+  </data>
+</root>"];
 
-$tests[] = ['GET_LOYALTY_TRANSACTION_SUMMARY', $w3p->buildRecordParams('GET_LOYALTY_TRANSACTION_SUMMARY', [
-    'fftrxdate' => '',
-    'fttrxdate' => '',
-    'fdoctype' => '',
-    'freference_code' => '',
-    'fofficeid' => 'TEST',
-    'ffspmembid' => $testMemberId,
-    'fkeyword' => '',
-])];
+$tests[] = ['GET_LOYALTY_TRANSACTION_SUMMARY', "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <record>
+      <fftrxdate></fftrxdate>
+      <fttrxdate></fttrxdate>
+      <fdoctype></fdoctype>
+      <freference_code></freference_code>
+      <fofficeid>TEST</fofficeid>
+      <ffspmembid>6704-3865</ffspmembid>
+      <fkeyword></fkeyword>
+    </record>
+  </data>
+</root>"];
 
-$tests[] = ['GET_LOYALTY_LEDGER', $w3p->buildFilterParams('GET_LOYALTY_LEDGER', [
-    'ffspmembid' => $testMemberId,
-    'fftrxdate' => '',
-    'fttrxdate' => '',
-])];
+$tests[] = ['GET_LOYALTY_LEDGER', "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <filter>
+      <ffspmembid>6704-3865</ffspmembid>
+      <fftrxdate></fftrxdate>
+      <fttrxdate></fttrxdate>
+    </filter>
+  </data>
+</root>"];
 
-$tests[] = ['GET_LOYALTY_ADJUST_POINT', $w3p->buildFilterParams('GET_LOYALTY_ADJUST_POINT', [
-    'ffspmembid' => $testMemberId,
-    'fstatus_flag' => '6',
-    'fftrxdate' => '',
-    'fttrxdate' => '',
-    'freference_code' => '',
-    'fdocument_no' => '',
-])];
+$tests[] = ['GET_LOYALTY_ADJUST_POINT', "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <filter>
+      <ffspmembid>6704-3865</ffspmembid>
+      <fstatus_flag>6</fstatus_flag>
+      <fftrxdate></fftrxdate>
+      <fttrxdate></fttrxdate>
+      <freference_code></freference_code>
+      <fdocument_no></fdocument_no>
+    </filter>
+  </data>
+</root>"];
 
-$tests[] = ['SAVE_LOYALTY_ADJUST_POINT', $w3p->buildRecordParams('SAVE_LOYALTY_ADJUST_POINT', [
-    'ftrxdate' => '20231201',
-    'freference_code' => '1',
-    'ffspmembid' => $testMemberId,
-    'fofficeid' => 'TEST',
-    'fpoint' => '1',
-    'fmemo' => 'Point adjustment from Doxo',
-])];
+$tests[] = ['SAVE_LOYALTY_ADJUST_POINT', "<root>
+  <id>
+    <fw3p_id>{$id}</fw3p_id>
+    <fw3p_key>{$key}</fw3p_key>
+  </id>
+  <data>
+    <record>
+      <ftrxdate>20231201</ftrxdate>
+      <freference_code>1</freference_code>
+      <ffspmembid>6704-3865</ffspmembid>
+      <fofficeid>TEST</fofficeid>
+      <fpoint>1</fpoint>
+      <fmemo>Point adjustment from Doxo</fmemo>
+    </record>
+  </data>
+</root>"];
 
 $passed = 0;
 $failed = 0;
@@ -102,12 +187,13 @@ foreach ($tests as $i => $test) {
 
     if ($result['success']) {
         $passed++;
-        echo "      Response: {$result['response']}\n\n";
     } else {
         $failed++;
         echo "      Error: {$result['error']}\n";
-        echo "      Response: {$result['response_xml']}\n\n";
     }
+
+    echo "--- Request XML ---\n{$result['request_xml']}\n";
+    echo "--- Response ---\n{$result['response']}\n\n";
 }
 
 echo "\n============================================\n";

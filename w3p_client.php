@@ -8,11 +8,13 @@ class W3PSoapClient
 
     public function __construct(string $w3p_id = '', string $w3p_key = '')
     {
-        $this->w3p_id = $w3p_id ?: getenv('W3P_ID') ?: '';
-        $this->w3p_key = $w3p_key ?: getenv('W3P_KEY') ?: '';
+        $env = file_exists(__DIR__ . '/.env') ? parse_ini_file(__DIR__ . '/.env') : [];
 
-        $wsdl = getenv('W3P_WSDL') ?: 'http://statara2.alliancewebpos.net/appserv/app/w3p/w3p.wsdl';
-        $endpoint = getenv('W3P_ENDPOINT') ?: 'http://statara2.alliancewebpos.net/appserv/app/w3p/W3PSoapServer.php';
+        $this->w3p_id = $w3p_id ?: ($env['W3P_ID'] ?? getenv('W3P_ID') ?: '');
+        $this->w3p_key = $w3p_key ?: ($env['W3P_KEY'] ?? getenv('W3P_KEY') ?: '');
+
+        $wsdl = $env['SOAP_WSDL'] ?? getenv('SOAP_WSDL') ?: 'http://statara2.alliancewebpos.net/appserv/app/w3p/w3p.wsdl';
+        $endpoint = $env['SOAP_ENDPOINT'] ?? getenv('SOAP_ENDPOINT') ?: 'http://statara2.alliancewebpos.net/appserv/app/w3p/W3PSoapServer.php';
 
         $this->client = new SoapClient($wsdl, [
             'location' => $endpoint,
@@ -73,6 +75,16 @@ class W3PSoapClient
         return $this->call($action, $params[0] ?? '');
     }
 
+    public function getW3pId(): string
+    {
+        return $this->w3p_id;
+    }
+
+    public function getW3pKey(): string
+    {
+        return $this->w3p_key;
+    }
+
     public function getLastRequest(): string
     {
         return $this->client->__getLastRequest();
@@ -96,8 +108,8 @@ class W3PSoapClient
                 'success' => true,
                 'time_ms' => $time,
                 'response' => $response,
-                'request_xml' => $this->getLastRequest(),
-                'response_xml' => $this->getLastResponse(),
+                'request_xml' => self::formatXml(html_entity_decode($this->getLastRequest())),
+                'response_xml' => $response,
                 'error' => null,
             ];
         } catch (SoapFault $e) {
@@ -108,10 +120,19 @@ class W3PSoapClient
                 'success' => false,
                 'time_ms' => $time,
                 'response' => null,
-                'request_xml' => $this->getLastRequest(),
-                'response_xml' => $this->getLastResponse(),
+                'request_xml' => self::formatXml(html_entity_decode($this->getLastRequest())),
+                'response_xml' => self::formatXml(html_entity_decode($this->getLastResponse())),
                 'error' => $e->getMessage(),
             ];
         }
+    }
+
+    private static function formatXml(string $xml): string
+    {
+        $dom = new DOMDocument('1.0');
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = true;
+        $dom->loadXML($xml);
+        return $dom->saveXML();
     }
 }
